@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+    <script src="/javascripts/jquery-2.2.4.min.js"></script>
+    <script src="/javascripts/bootstrap.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <link rel="stylesheet" href="/stylesheets/bootstrap.min.css">
+</head>
+<body>
+<div class="name-register-wrapper" class="form-group col-md-12">
+    <div class="col-md-11">
+        <input type="text" name="name" class="user-name-input form-control" placeholder="Enter your name to start chat">
+    </div>
+    <div class="col-md-1">
+        <input type="submit" name="start_chat" class="start-button btn btn-primary" value="Start Chat">
+    </div>
+</div>
+<div class="col-md-12 room-selection-wrapper">
+    Available Chat Rooms
+    <hr/>
+    <div class="available-rooms">
+    </div>
+    <hr/>
+    Create New Chat Room
+    <hr/>
+    <button class="btn btn-info new-room-button"><i class="fa fa-plus"></i> New Room</button>
+</div>
+<div class="chat-display-wrapper">
+    <div class="col-md-12">
+        <div class="col-md-12"><h4 id="title-room-name"></h4></div>
+        <div class="col-md-12 form-group">
+            <textarea id="chat-display" rows="15" class="form-control" disabled="true"></textarea>
+        </div>
+    </div>
+    <div class="form-group col-md-12">
+        <form id="chat-form">
+            <div class="col-md-11">
+                <input type="text" class="form-control" name="" id="message-box">
+            </div>
+            <div class="col-md-1">
+                <input type="submit" class="btn btn-success" name="" id="send-message">
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODALS -->
+<div id="create-new-room-dialog" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Enter Room Name</h4>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-12 form-group">
+                    <input type="text" name="room_name" class="form-control room-name" placeholder="Enter Room Name">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" id="create-room-button">Create
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+</body>
+</html>
+
+<script type="application/javascript">
+    var socket = io.connect(),
+            chat_form = $('#chat-form'),
+            message_input = $('#message-box'),
+            chat_display = $('#chat-display'),
+            user_name = '',
+            id = '',
+            room_name = '';
+
+    $(document).ready(function () {
+        $(document).on('click', '.start-button', function () {
+            user_name = $('.user-name-input').val();
+            id = Math.floor(Math.random() * 500).toString() + user_name;
+            console.log(id);
+            if (user_name !== '') {
+                socket.emit('new user', {'id': id, 'user_name': user_name});
+            } else {
+            }
+        });
+
+        $(document).on('click', '.new-room-button', function () {
+            $('#create-new-room-dialog').modal('show');
+        });
+
+        $(document).on('click', '#create-room-button', function () {
+            // socket = io.connect();
+            room_name = $('.room-name').val();
+            socket.emit('create new room', {'id': id, 'user_name' : user_name, 'room_name': room_name});
+        });
+
+        $(document).on('click', '.join-room-button', function () {
+            room_name = $(this).attr('data-room-name');
+            socket.emit('join room', {'id': id, 'user_name' : user_name, 'room_name': room_name});
+        });
+
+        chat_form.submit(function (e) {
+            e.preventDefault();
+            socket.emit('send message', {
+                'id': id,
+                'user_name': user_name,
+                'room_name': room_name,
+                'message': message_input.val()
+            });
+            message_input.val('');
+        });
+
+        socket.on('update available rooms', function (data) {
+            console.log('AVAILABLE ROOMS: ' + data);
+            var html = '';
+            for (var i in data) {
+                html += '<button class="btn btn-success join-room-button" data-room-name="'+ data[i]['room_name'] +'"><i class="fa fa-plus"></i> Join ' + data[i]['room_name'] + '</button>';
+            }
+            $('.available-rooms').html(html);
+        });
+
+        socket.on('incoming message', function (data) {
+            var str = data['user_name'] + ': ' + data['message'];
+            chat_display.append(str + '\n');
+        });
+
+        socket.on('new user success', function (data) {
+            // chat_display.append('New user added: ' + data + '\n');
+            if (data['id'] == id) {
+                socket.emit('get available rooms', data);
+                $('.name-register-wrapper').css('display', 'none');
+                $('.room-selection-wrapper').css('display', 'block');
+            }
+        });
+
+        socket.on('new user error', function (data) {
+            if (data['id'] == id) {
+                alert('User name already taken');
+            }
+        });
+
+        socket.on('create new room success', function (data) {
+            if (data['id'] == id) {
+                console.log(data);
+                $('.room-selection-wrapper').css('display', 'none');
+                $('.chat-display-wrapper').css('display', 'block');
+                $('#title-room-name').text(data['room_name']);
+                chat_display.append(data['user_name'] + ' just created a new room' + data['room_name'] + '\n');
+            }
+        });
+
+        socket.on('join room success', function (data) {
+            if (data['id'] == id) {
+                console.log(data);
+                $('.room-selection-wrapper').css('display', 'none');
+                $('.chat-display-wrapper').css('display', 'block');
+            }
+            $('#title-room-name').text(data['room_name']);
+            chat_display.append(data['user_name'] + ' has joined the room ' + data['room_name'] + '\n');
+        })
+    });
+
+</script>

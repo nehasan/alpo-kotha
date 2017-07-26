@@ -1,0 +1,53 @@
+exports = module.exports = function(io){
+    var users = [];
+    var available_rooms = [];
+
+    io.on('connection', function(socket){
+
+        io.emit('update available rooms', available_rooms);
+
+        socket.on('create new room', function(data){
+            available_rooms.push({'creator_id': data['id'], 'room_name' : data['room_name']});
+            socket.join(data['room_name']);
+            console.log(available_rooms);
+            io.emit('create new room success', data);
+        });
+
+        socket.on('join room', function(data){
+            socket.join(data['room_name']);
+            io.emit('join room success', data);
+        });
+
+        socket.on('new user', function(data){
+            if(userNotExist(data)){
+                users.push({'id' : data['id'], 'user_name' : data['user_name']});
+                console.log('New user added: ' + data);
+                io.emit('new user success', data);
+            }else{
+                console.log('user not created');
+                io.emit('new user error', data);
+            }
+        });
+
+        socket.on('send message', function(data){
+            console.log(data);
+            io.to(data['room_name']).emit('incoming message', data);
+            // socket.broadcast.emit('new message', data);
+        });
+
+        socket.on('get available rooms', function(data){
+            io.emit('update available rooms', available_rooms);
+        });
+    });
+
+    function userNotExist(data){
+        if(users.length == 0){
+            return true;
+        }else{
+            console.log('HERE');
+            console.log(users);
+            var u = users.filter(function(elm){ return elm['user_name'] == data['user_name']});
+            return u.length == 0 ? true : false;
+        }
+    }
+};
