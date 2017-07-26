@@ -18,6 +18,6 @@
     "mongodb": "~2.1.0",
     "mongoose": "4.4.19",
     "jquery": "2.2.4",
-    "bootstrap" : "2.3.2" 
+    "bootstrap" : "~2.3.2" 
   }
 }
