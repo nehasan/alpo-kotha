@@ -7,13 +7,6 @@ var bodyParser = require('body-parser');
 var passport = require('passport');
 var expressSession = require('express-session');
 
-// Initialize Passport
-var initPassport = require('./passport/init');
-initPassport(passport);
-
-var index = require('./routes/index')(passport);
-var users = require('./routes/users');
-
 // Connect to DB
 var dbConfig = require('./db');
 var mongoose = require('mongoose');
@@ -49,6 +42,13 @@ app.use(favicon(__dirname + '/public/images/favicon.ico'));
 
 var flash = require('connect-flash');
 app.use(flash());
+
+// Initialize Passport
+var initPassport = require('./passport/init');
+initPassport(passport);
+
+var index = require('./routes/index')(passport);
+var users = require('./routes/users');
 
 app.use('/', index);
 app.use('/users', users);

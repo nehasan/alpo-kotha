@@ -75,7 +75,7 @@ a {
 }
 .login-title{
     color: #555;
-    font-size: 18px;
+    /*font-size: 18px;*/
     font-weight: 400;
     display: block;
 }
@@ -92,7 +92,7 @@ a {
     display: block;
     margin-top: 10px;
 }
-h1.error-message{
+h1.error-message, h4.error-message{
     color: red;
 }
 ul.user-details{

@@ -29,7 +29,7 @@ module.exports = function(passport){
                         var newUser = new User();
 
                         // set the user's local credentials
-                        newUser.user_name = req.param('email');
+                        newUser.user_name = req.param('user_name');
                         newUser.password = createHash(password);
                         newUser.email = email;
 
@@ -39,7 +39,7 @@ module.exports = function(passport){
                                 console.log('Error in Saving user: '+err);
                                 throw err;
                             }
-                            console.log('User Registration succesfull');
+                            console.log('User Registration successful');
                             return done(null, newUser);
                         });
                     }
