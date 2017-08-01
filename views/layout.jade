@@ -1,0 +1,33 @@
+doctype html
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
+    script(src='/javascripts/jquery-2.2.4.min.js')
+    script(src='/javascripts/bootstrap.min.js')
+  body
+    nav.navbar.navbar-default.navbar-fixed-top
+      div.container-fluid
+        div.navbar-header
+          button(type='button', class='navbar-toggle collapsed', data-toggle='collapse', data-target='#bs-example-navbar-collapse-1', aria-expanded='false')
+            span.sr-only Toggle Navigation
+            span.icon-bar
+            span.icon-bar
+          a(class='navbar-brand', href='#') Brand
+        div(class='collapse navbar-collapse', id='bs-example-navbar-collapse-1')
+          ul.nav.navbar-nav.navbar-right
+            li.active
+              a(href='#') Link
+            li.dorpdown
+              a(href='#', class='dropdown-toggle', data-toggle='dropdown', role='button', aria-haspopup='true', aria-expanded='false')
+                Dropdown
+                span.caret
+              ul.dropdown-menu
+                li
+                    a(href='#') Action
+                li(role='separator', class='divider')
+                if user
+                li
+                    a(href='/sign_out') Sign out
+    block content
