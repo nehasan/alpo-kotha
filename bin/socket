@@ -19,8 +19,9 @@ exports = module.exports = function(io){
         });
 
         socket.on('new user', function(data){
+            console.log(data);
             if(userNotExist(data)){
-                users.push({'id' : data['id'], 'user_name' : data['user_name']});
+                users.push({'user_id' : data['user_id'], 'user_name' : data['user_name']});
                 console.log('New user added: ' + data);
                 io.emit('new user success', data);
             }else{
@@ -46,7 +47,7 @@ exports = module.exports = function(io){
         }else{
             console.log('HERE');
             console.log(users);
-            var u = users.filter(function(elm){ return elm['user_name'] == data['user_name']});
+            var u = users.filter(function(elm){ return elm['user_id'] == data['user_id']});
             return u.length == 0 ? true : false;
         }
     }

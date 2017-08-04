@@ -41,7 +41,7 @@ module.exports = function(passport){
 
   /* GET Home Page */
   router.get('/home', isAuthenticated, function(req, res){
-    res.render('home', { title: 'Express', user: req.user });
+    res.render('home', { title: 'Express', user: req.user, controller: 'home' });
   });
 
   /* Handle Logout */

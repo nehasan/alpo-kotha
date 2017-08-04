@@ -6,6 +6,8 @@ html
     link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
     script(src='/javascripts/jquery-2.2.4.min.js')
     script(src='/javascripts/bootstrap.min.js')
+    script(src='/socket.io/socket.io.js')
+    script(src='/javascripts/home.js')
   body
     nav.navbar.navbar-default.navbar-fixed-top
       div.container-fluid
@@ -27,7 +29,11 @@ html
                 li
                     a(href='#') Action
                 li(role='separator', class='divider')
-                if user
-                li
-                    a(href='/sign_out') Sign out
+                if user == undefined
+                    li
+                        a(href='/') Sign in
+                else
+                    li
+                        a(href='/sign_out') Sign out
+                    
     block content
