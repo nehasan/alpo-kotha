@@ -1,47 +1,69 @@
 extends layout
 
 block content
-        div.container
-        div.row
-            input(type='hidden' id='user-id' value=user.id)
-            input(type='hidden' id='user-name' value=user.user_name)
-            div.col-md-12.room-selection-wrapper
-                | Available Chat Rooms
-                hr
-                .available-rooms
-                hr
-                |             Create New Chat Room
-                hr
-                button.btn.btn-info.new-room-button
-                    i.fa.fa-plus
-                    |  New Room
-            div.chat-display-wrapper
+    div.row
+            div.col-md-9
+            div.col-md-3
+                div.list-group.chat-user-list(id='chat-users')
+                    each val in users
+                        if val.id != user.id
+                            a.list-group-item.chat-user(href='#' data_user_id=val.id data_user_name=val.usr_name)
+                                div.row
+                                    div.col-md-10=val.user_name
+                                    div.col-md-2
+                                        if val.online
+                                            div.online(style='background: green')
+                                        else
+                                            div.online(style='background: gray')
+    div.row(style='display:none')
+        input(type='hidden' id='user-id' value=user.id)
+        input(type='hidden' id='user-name' value=user.user_name)
+        div.col-md-12.room-selection-wrapper
+            | Available Chat Rooms
+            hr
+            .available-rooms
+            hr
+            |             Create New Chat Room
+            hr
+            button.btn.btn-info.new-room-button
+                i.fa.fa-plus
+                |  New Room
+        div.chat-display-wrapper
+            div.col-md-12
                 div.col-md-12
-                    div.col-md-12
-                        h4#title-room-name
-                    div.col-md-12.form-group
-                        textarea#chat-display.form-control(rows='15', disabled='true')
-                div.form-group.col-md-12
-                    form#chat-form
-                        div.col-md-11
-                            input#message-box.form-control(type='text', name='')
-                        div.col-md-1
-                            input#send-message.btn.btn-success(type='submit', name='')
-            // MODALS
-            #create-new-room-dialog.modal.fade(tabindex='-1', role='dialog')
-                div.modal-dialog
-                    div.modal-content
-                        div.modal-header
-                            button.close(type='button', data-dismiss='modal', aria-label='Close')
-                                span(aria-hidden='true') ×
-                            h4.modal-title Enter Room Name
-                        div.modal-body
-                            div.col-md-12.form-group
-                                input.form-control.room-name(type='text', name='room_name', placeholder='Enter Room Name')
-                        div.modal-footer
-                            button.btn.btn-default(type='button', data-dismiss='modal') Close
-                            button#create-room-button.btn.btn-primary(type='button', data-dismiss='modal')
-                                | Create
-                    // /.modal-content
-                // /.modal-dialog
-            // /.modal
+                    h4#title-room-name
+                div.col-md-12.form-group
+                    textarea#chat-display.form-control(rows='15', disabled='true')
+            div.form-group.col-md-12
+                form#chat-form
+                    div.col-md-11
+                        input#message-box.form-control(type='text', name='')
+                    div.col-md-1
+                        button#send-message.btn.btn-success(type='submit', name='') Send
+        // MODALS
+        #create-new-room-dialog.modal.fade(tabindex='-1', role='dialog')
+            div.modal-dialog
+                div.modal-content
+                    div.modal-header
+                        button.close(type='button', data-dismiss='modal', aria-label='Close')
+                            span(aria-hidden='true') ×
+                        h4.modal-title Enter Room Name
+                    div.modal-body
+                        div.col-md-12.form-group
+                            input.form-control.room-name(type='text', name='room_name', placeholder='Enter Room Name')
+                    div.modal-footer
+                        button.btn.btn-default(type='button', data-dismiss='modal') Close
+                        button#create-room-button.btn.btn-primary(type='button', data-dismiss='modal')
+                            | Create
+                // /.modal-content
+            // /.modal-dialog
+        // /.modal
+    div.chat-bubbles
+        div.col-sm-3.col-sm-offset-4.frame(style='display: none')
+            div.col-sm-12.chat-header
+            div.chat-body
+                ul
+                div
+                    div.msj-rta.macro(style='margin:auto')
+                        div.text.text-r(style='background:whitesmoke !important')
+                            input.mytext(placeholder='Type a text')

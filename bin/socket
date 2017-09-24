@@ -1,53 +1,71 @@
+var User = require('../models/user');
+
 exports = module.exports = function(io){
-    var users = [];
+    var  online_users = [];
     var available_rooms = [];
 
     io.on('connection', function(socket){
 
-        io.emit('update available rooms', available_rooms);
+        io.emit('update_available_rooms', available_rooms);
+        setInterval(function(){
+//            console.log('UPDATE USER ONLINE STATUS INFO EXECUTED');
+            User.find({}, function(err, users){
+                if(users){
+                    io.emit('update_users_online_status', users);
+                }
+            });
+        }, 60000);
 
-        socket.on('create new room', function(data){
-            available_rooms.push({'creator_id': data['id'], 'room_name' : data['room_name']});
+        socket.on('create_new_room', function(data){
+            available_rooms.push({'creator_id': data['user_id'], 'room_name': data['room_name']});
             socket.join(data['room_name']);
-            console.log(available_rooms);
-            io.emit('create new room success', data);
+//            console.log(available_rooms);
+            io.emit('create_new_room_success', data);
         });
 
-        socket.on('join room', function(data){
+        socket.on('join_room', function(data){
             socket.join(data['room_name']);
-            io.emit('join room success', data);
+            io.emit('join_room_success', data);
         });
 
-        socket.on('new user', function(data){
-            console.log(data);
-            if(userNotExist(data)){
-                users.push({'user_id' : data['user_id'], 'user_name' : data['user_name']});
-                console.log('New user added: ' + data);
-                io.emit('new user success', data);
+        socket.on('user_online', function(data){
+//            console.log(data);
+            if(userOffline(data)){
+                online_users.push({'user_id' : data['user_id'], 'user_name' : data['user_name']});
+//                console.log('User became online: ' + data);
+//                console.log('--- ONLINE USERS: ', JSON.stringify(online_users, null, 4));
+                io.emit('user_online_success', data);
             }else{
-                console.log('user not created');
-                io.emit('new user error', data);
+//                console.log('user already online');
+                io.emit('user_already_online', data);
             }
         });
 
-        socket.on('send message', function(data){
-            console.log(data);
-            io.to(data['room_name']).emit('incoming message', data);
+        socket.on('send_message', function(data){
+//            console.log(data);
+            io.to(data['room_name']).emit('incoming_message', data);
             // socket.broadcast.emit('new message', data);
         });
 
-        socket.on('get available rooms', function(data){
-            io.emit('update available rooms', available_rooms);
+        socket.on('get_available_rooms', function(data){
+            io.emit('update_available_rooms', available_rooms);
         });
+        
+        socket.on('user_offline', function(data){
+//            console.log('USER OFFLINE IO CALLED');
+            online_users = online_users.filter(function(elm){
+                elm['user_id'] != data['user_id'];
+            })
+//            console.log('--- ONLINE USERS: ', JSON.stringify(online_users, null, 4));
+        })
     });
 
-    function userNotExist(data){
-        if(users.length == 0){
+    function userOffline(data){
+        if(online_users.length == 0){
             return true;
         }else{
-            console.log('HERE');
-            console.log(users);
-            var u = users.filter(function(elm){ return elm['user_id'] == data['user_id']});
+//            console.log(online_users);
+            var u = online_users.filter(function(elm){ return elm['user_id'] == data['user_id']});
             return u.length == 0 ? true : false;
         }
     }

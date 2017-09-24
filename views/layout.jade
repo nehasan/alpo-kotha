@@ -8,6 +8,7 @@ html
     script(src='/javascripts/bootstrap.min.js')
     script(src='/socket.io/socket.io.js')
     script(src='/javascripts/home.js')
+    script(src='/javascripts/layout.js')
   body
     nav.navbar.navbar-default.navbar-fixed-top
       div.container-fluid
@@ -34,6 +35,6 @@ html
                         a(href='/') Sign in
                 else
                     li
-                        a(href='/sign_out') Sign out
+                        a(href='/sign_out', id='sign-out-link') Sign out
                     
     block content

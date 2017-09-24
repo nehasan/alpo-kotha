@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var User = require('../models/user');
 
 var isAuthenticated = function (req, res, next) {
   // if user is authenticated in the session, call the next() to call the next request handler
@@ -41,13 +42,24 @@ module.exports = function(passport){
 
   /* GET Home Page */
   router.get('/home', isAuthenticated, function(req, res){
-    res.render('home', { title: 'Express', user: req.user, controller: 'home' });
+      User.find({}, function(err, users){
+          if(err){
+//              console.log(err);
+//              return [];
+          }else{
+//              console.log('AKHSJHJS : ', users);
+              res.render('home', { title: 'Express', user: req.user, users: users });
+          }
+      });
   });
 
   /* Handle Logout */
   router.get('/sign_out', function(req, res) {
+//      console.log('LOG OUT:', req.user);
+      user = req.user;
+      user['online'] = false;
+      user.save();
     req.logout();
-//      console.log(req.user);
     res.redirect('/');
   });
 
