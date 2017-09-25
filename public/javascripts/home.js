@@ -41,22 +41,26 @@ $(document).ready(function () {
     $(document).on('click', '.chat-user', function(){
 //        console.log($(this).attr('data_user_id'));
 //        console.log($(this).attr('data_user_name'));
-        var new_chat_bubble = '<div class="col-sm-3 col-sm-offset-4 frame chat-bubble">' +
-            '<div class="col-sm-12 chat-header">' + $(this).attr('data_user_name') +'</div>' +
-            '<div class="chat-body">' +
-            '<ul>' +
-            '<div>' +
-            '<div class="msj-rta macro style="margin:auto">' +
-            '<div class="text text-r" style="background:whitesmoke !important">' +
-            '<input class="mytext" placeholder="Type a text"/>' +
-            '</div>' +
-            '</div>' +
-            '</div>' +
-            '</ul>' +
-            '</div>' +
-            '</div>';
+        var new_chat_bubble = $('.frame');
+        new_chat_bubble.attr('id', 'chat-bubble-' + $(this).attr('data_user_id'));
+        new_chat_bubble.find('.chat-header').html($(this).attr('data_user_name'));
+        new_chat_bubble.css('display', 'block');
+//        var new_chat_bubble = '<div class="col-sm-3 col-sm-offset-4 frame" id="chat-bubble-' + $(this).attr('data_user_id') + '">' +
+//            '<div class="col-sm-12 chat-header">' + $(this).attr('data_user_name') +'</div>' +
+//            '<div class="chat-body">' +
+//            '<ul>' +
+//            '<div>' +
+//            '<div class="msj-rta macro" style="margin:auto">' +
+//            '<div class="text text-r" style="background:whitesmoke !important">' +
+//            '<input class="mytext" placeholder="Type a text">' +
+//            '</div>' +
+//            '</div>' +
+//            '</div>' +
+//            '</ul>' +
+//            '</div>' +
+//            '</div>';
         $('.chat-bubbles').html(new_chat_bubble);
-    })
+    });
     
     socket.on('update_users_online_status', function(data){
 //        console.log(data);
@@ -79,7 +83,7 @@ $(document).ready(function () {
                     '</a>';
             }
         }
-        console.log(html);
+//        console.log(html);
         $('#chat-users').html(html);
     });
 

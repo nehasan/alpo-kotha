@@ -149,9 +149,14 @@ ul.user-details{
     padding: 0;
     right: 40px;
     bottom: 0;
+    border: 1px solid#e7e7e7;
+    background: #f8f8f8;
+    border-radius: 3px;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
 }
 .chat-header{
-    position:absolute;width:100%;display:flex;
+    position:absolute;width:100%;display:flex;padding: 5px;background: #808080;padding: 10px;background: #808080;color: antiquewhite;
 }
 /*
 .frame > div:last-of-type{
@@ -169,7 +174,6 @@ ul.user-details{
     bottom:32px;
     display:flex;
     flex-direction: column;
-
 }
 .msj:before{
     width: 0;
