@@ -10,6 +10,12 @@ $(document).ready(function () {
     user_id = $('#user-id').val(),
     user_name = $('#user-name').val();
     
+    var me = {};
+    me.avatar = "https://lh6.googleusercontent.com/-lr2nyjhhjXw/AAAAAAAAAAI/AAAAAAAARmE/MdtfUmC0M4s/photo.jpg?sz=48";
+
+    var you = {};
+    you.avatar = "https://a11.t26.net/taringa/avatares/9/1/2/F/7/8/Demon_King1/48x48_5C5.jpg";
+    
     init_socket(user_id, user_name);
 
     $(document).on('click', '.new-room-button', function () {
@@ -53,6 +59,7 @@ $(document).ready(function () {
 //            '<div class="col-sm-12 chat-header">' + $(this).attr('data_user_name') +'</div>' +
 //            '<div class="chat-body">' +
 //            '<ul>' +
+//            '</ul>' +
 //            '<div>' +
 //            '<div class="msj-rta macro" style="margin:auto">' +
 //            '<div class="text text-r" style="background:whitesmoke !important">' +
@@ -60,7 +67,6 @@ $(document).ready(function () {
 //            '</div>' +
 //            '</div>' +
 //            '</div>' +
-//            '</ul>' +
 //            '</div>' +
 //            '</div>';
         $('.chat-bubbles').html(new_chat_bubble);
@@ -99,7 +105,7 @@ $(document).ready(function () {
             var receiver_id = $(this).attr('data_receiver_id');
             var receiver_name = $(this).attr('data_receiver_name');
             if (text !== ""){
-                insertChat("me", text, $('chat-bubble-' + receiver_id));
+                insertChat("me", text, $('#chat-bubble-' + receiver_id));
                 socket.emit('send_text', { sender: { id: sender_id, name: sender_name }, receiver: { id: receiver_id, name: receiver_name }, message: text });
                 $(this).val('');
             }
@@ -107,26 +113,29 @@ $(document).ready(function () {
     });
     
     socket.on('receive_text', function(data){
-        if(data['receiver_id'] == user_id){
-            var target = $('#chat-bubble-' + data['receiver']['id']);
-            if(target != undefind && target.is(":visible")){
-               insert_text('you', data['text'], target);
+        console.log("TEXT RECEIVED");
+        if(data['receiver']['id'] == user_id){
+            var target = $('#chat-bubble-' + data['sender']['id']);
+            if(target != undefined && target.is(":visible")){
+               insertChat('you', data['message'], target);
             }else{
                var new_chat_bubble = '<div class="col-sm-3 col-sm-offset-4 frame" id="chat-bubble-' + data['sender']['id'] + '">' +
                 '<div class="col-sm-12 chat-header">' + data['sender']['name'] +'</div>' +
                 '<div class="chat-body">' +
                 '<ul>' +
+                '</ul>' +
                 '<div>' +
                 '<div class="msj-rta macro" style="margin:auto">' +
                 '<div class="text text-r" style="background:whitesmoke !important">' +
-                '<input class="mytext" placeholder="Type a text" data_sender_id="' + data['sender']['id'] + '" data_sender_name="' + data['sender']['name'] + '" data_receiver_id="' + data['reciver']['id'] + '" data_receiver_name="' + data['receiver']['name'] + '">' +
+                '<input class="mytext" placeholder="Type a text" data_sender_id="' + data['sender']['id'] + '" data_sender_name="' + data['sender']['name'] + '" data_receiver_id="' + data['receiver']['id'] + '" data_receiver_name="' + data['receiver']['name'] + '">' +
                 '</div>' +
                 '</div>' +
                 '</div>' +
-                '</ul>' +
                 '</div>' +
                 '</div>';
                 $('.chat-bubbles').html(new_chat_bubble);
+                target = $('#chat-bubble-' + data['sender']['id']);
+                insertChat('you', data['message'], target);
             }
         }
     });
@@ -166,6 +175,7 @@ $(document).ready(function () {
                             '<div class="avatar" style="padding:0px 0px 0px 10px !important"><img class="img-circle" style="width:100%;" src="'+you.avatar+'" /></div>' +                                
                       '</li>';
         }
+        console.log(target);
         target.find("ul").append(control);
     }
     socket.on('update_available_rooms', function (data) {

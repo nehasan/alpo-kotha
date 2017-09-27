@@ -156,7 +156,7 @@ ul.user-details{
     padding-right: 0 !important;
 }
 .chat-header{
-    position:absolute;width:100%;display:flex;padding: 5px;background: #808080;padding: 10px;background: #808080;color: antiquewhite;
+    width:100%;display:flex;padding: 5px;background: #808080;padding: 10px;background: #808080;color: antiquewhite;
 }
 /*
 .frame > div:last-of-type{
