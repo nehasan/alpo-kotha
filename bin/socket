@@ -15,6 +15,10 @@ exports = module.exports = function(io){
                 }
             });
         }, 60000);
+        
+        socket.on('send_text', function(data){
+            io.emit('receive_text', data);
+        });
 
         socket.on('create_new_room', function(data){
             available_rooms.push({'creator_id': data['user_id'], 'room_name': data['room_name']});

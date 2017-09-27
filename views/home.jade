@@ -7,7 +7,7 @@ block content
                 div.list-group.chat-user-list(id='chat-users')
                     each val in users
                         if val.id != user.id
-                            a.list-group-item.chat-user(href='#' data_user_id=val.id data_user_name=val.usr_name)
+                            a.list-group-item.chat-user(href='#' data_user_id=val.id data_user_name=val.user_name)
                                 div.row
                                     div.col-md-10=val.user_name
                                     div.col-md-2
@@ -60,7 +60,7 @@ block content
         // /.modal
     div.chat-bubbles
         div.col-sm-3.col-sm-offset-4.frame(style='display: none')
-            div.col-sm-12.chat-header Nahid Ebna Hasan 1
+            div.col-sm-12.chat-header
             div.chat-body
                 ul
                 div
