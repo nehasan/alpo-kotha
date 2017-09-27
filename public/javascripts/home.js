@@ -127,7 +127,7 @@ $(document).ready(function () {
                 '<div>' +
                 '<div class="msj-rta macro" style="margin:auto">' +
                 '<div class="text text-r" style="background:whitesmoke !important">' +
-                '<input class="mytext" placeholder="Type a text" data_sender_id="' + data['sender']['id'] + '" data_sender_name="' + data['sender']['name'] + '" data_receiver_id="' + data['receiver']['id'] + '" data_receiver_name="' + data['receiver']['name'] + '">' +
+                '<input class="mytext" placeholder="Type a text" data_sender_id="' + data['receiver']['id'] + '" data_sender_name="' + data['receiver']['name'] + '" data_receiver_id="' + data['sender']['id'] + '" data_receiver_name="' + data['sender']['name'] + '">' +
                 '</div>' +
                 '</div>' +
                 '</div>' +
@@ -178,6 +178,11 @@ $(document).ready(function () {
         console.log(target);
         target.find("ul").append(control);
     }
+    
+    $(document).on('click', '.chat-bubble-close', function(){
+        $(this).parent().parent().css('display', 'none');
+    })
+    
     socket.on('update_available_rooms', function (data) {
 //        console.log('AVAILABLE ROOMS: ' + data);
         available_rooms = data;
