@@ -7,14 +7,14 @@ exports = module.exports = function(io){
     io.on('connection', function(socket){
 
         io.emit('update_available_rooms', available_rooms);
-//        setInterval(function(){
-////            console.log('UPDATE USER ONLINE STATUS INFO EXECUTED');
-//            User.find({}, function(err, users){
-//                if(users){
-//                    io.emit('update_users_online_status', users);
-//                }
-//            });
-//        }, 60000);
+       setInterval(function(){
+//            console.log('UPDATE USER ONLINE STATUS INFO EXECUTED');
+           User.find({}, function(err, users){
+               if(users){
+                   io.emit('update_users_online_status', users);
+               }
+           });
+       }, 60000);
         
         socket.on('send_text', function(data){
             io.emit('receive_text', data);
